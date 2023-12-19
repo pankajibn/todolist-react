@@ -1,0 +1,34 @@
+.tabs_container {
+ width: 100%;
+ display: flex;
+ align-items: center;
+ justify-content: flex-start;
+}
+.tabs_list {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap:5px
+}
+.tabs_list li {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 100px;
+    height: 28px;
+    line-height: 28px;
+    padding: 10px 5px;
+    border:1px solid #dae0e7;
+    background-color: #f9f9f9;
+    border-radius: 8px 8px 0px 0px;
+    cursor: pointer;
+
+}
+.tabs_list li:hover {
+    color: green;
+}
+.tabs_list li.active {
+    color: green;
+    background: #fff;
+    border-bottom: none;
+}

@@ -1,0 +1,46 @@
+.form_container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+}
+.form_container form {
+    width: 100%;
+}
+.form_wrapper{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+.form_input_row{
+    width: 100%;
+}
+.taskinput {
+width: 100%;
+height: 40px;
+padding: 0 5px;
+outline: transparent;
+font-size: 16px;
+color: #666;
+border-top-left-radius: 5px;
+border-bottom-left-radius: 5px;
+}
+.invalid {
+    border: 1px solid #e90303;
+}
+.valid {
+    border: 1px solid #ccc;
+}
+
+.add_btn {
+ border: none;
+ padding: 5px 20px;
+ border-top-right-radius: 5px;
+ border-bottom-right-radius: 5px;
+ background-color: #198754;
+ color: white;
+ height: 42px;
+ cursor: pointer;
+}
