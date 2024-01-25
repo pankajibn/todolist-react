@@ -1,28 +1,29 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import "./todolist.css";
 import CheckIcon from "../icons/CheckIcon";
 import EditIcon from "../icons/EditIcon";
 import DeleteIcon from "../icons/DeleteIcon";
 import { storeDataLocal } from "../../utils/storage";
-const TodoList = ({ tasks, setTasks, filter, setTask }) => {
+import { useTasks, useTasksDispatch } from "../../context/tasksContext";
+const TodoList = () => {
   const [filteredTasks, setFilteredTasks] = useState();
+  const { tasks, selectedTab, setTask, setMessage } = useTasks();
+  const dispatch = useTasksDispatch();
 
-  const handleClickAction = (id, action) => {
+  const handleClickAction = (item, action) => {
     switch (action) {
       case "markAsDone": {
-        const filterdTasks = tasks.map((item) =>
-          item.id === id ? { ...item, isCompleted: !item.isCompleted } : item
-        );
-        setTasks(filterdTasks);
-        storeDataLocal("localTasks", filterdTasks);
-
+        dispatch({
+          ...item,
+          isCompleted: !item.isCompleted,
+          type: "changed",
+        });
         break;
       }
       case "delete": {
         if (confirm(`Are you sure want to delete this task?`)) {
-          const filterdTasks = tasks.filter((item) => item.id !== id);
-          setTasks(filterdTasks);
-          storeDataLocal("localTasks", filterdTasks);
+          dispatch({ id: item.id, type: "deleted" });
+          setMessage(`Task has been deleted successfully!`);
         }
       }
       default:
@@ -30,11 +31,9 @@ const TodoList = ({ tasks, setTasks, filter, setTask }) => {
     }
   };
 
-  useEffect(() => {
-    if (tasks?.length === 0) return;
+  useMemo(() => {
     let results;
-    console.log("filter", filter);
-    switch (filter) {
+    switch (selectedTab) {
       case "Active": {
         results = tasks.filter((item) => !item?.isCompleted);
         break;
@@ -48,7 +47,7 @@ const TodoList = ({ tasks, setTasks, filter, setTask }) => {
         break;
     }
     setFilteredTasks(results);
-  }, [filter, tasks]);
+  }, [selectedTab, tasks]);
 
   return (
     <div className="list_container">
@@ -61,7 +60,7 @@ const TodoList = ({ tasks, setTasks, filter, setTask }) => {
           filteredTasks?.map((task) => (
             <li className="list_item" key={`item_${task?.id}`}>
               <div className="list_title">
-                <span onClick={() => handleClickAction(task?.id, "markAsDone")}>
+                <span onClick={() => handleClickAction(task, "markAsDone")}>
                   <CheckIcon checked={task?.isCompleted} />
                 </span>
                 {task?.title}
@@ -72,7 +71,7 @@ const TodoList = ({ tasks, setTasks, filter, setTask }) => {
                 </span>
                 <span
                   title="Delete"
-                  onClick={() => handleClickAction(task?.id, "delete")}
+                  onClick={() => handleClickAction(task, "delete")}
                 >
                   <DeleteIcon />
                 </span>

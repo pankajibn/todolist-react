@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import "./tabs.css";
-const Tabs = ({ selectedTab, setSelectedTab }) => {
+import { useTasks } from "../../context/tasksContext";
+const Tabs = () => {
   const tabs = ["All", "Active", "Completed"];
+  const { selectedTab, setSelectedTab } = useTasks();
+
   return (
     <div className="tabs_container">
       <ul className="tabs_list">

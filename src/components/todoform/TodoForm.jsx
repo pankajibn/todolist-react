@@ -1,9 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./todoform.css";
-const TodoForm = ({ hanledeAddTask, task }) => {
+import { useTasks, useTasksDispatch } from "../../context/tasksContext";
+const TodoForm = () => {
   const [text, setText] = useState("");
   const [invalid, setInvalid] = useState(false);
   const inputRef = useRef(null);
+  const { task, setTask, setMessage } = useTasks();
+  const dispatch = useTasksDispatch();
+
   const handleSumbit = (e) => {
     e.preventDefault();
     if (!text || text === "") {
@@ -11,8 +15,27 @@ const TodoForm = ({ hanledeAddTask, task }) => {
       inputRef.current.focus();
       return;
     }
-    const taskId = task ? task?.id : "";
-    hanledeAddTask(text, taskId);
+
+    let taskObj;
+    let alertMessage = ``;
+    if (task) {
+      taskObj = {
+        ...task,
+        title: text,
+        type: "changed",
+      };
+      alertMessage = `Task has been updated successfully!`;
+    } else {
+      taskObj = {
+        title: text,
+        type: "added",
+      };
+      alertMessage = `Task has been added successfully!`;
+    }
+
+    dispatch(taskObj);
+    setTask();
+    setMessage(alertMessage);
     setText("");
   };
 
