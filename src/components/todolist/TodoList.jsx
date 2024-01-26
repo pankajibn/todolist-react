@@ -1,29 +1,32 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import "./todolist.css";
 import CheckIcon from "../icons/CheckIcon";
 import EditIcon from "../icons/EditIcon";
 import DeleteIcon from "../icons/DeleteIcon";
-import { storeDataLocal } from "../../utils/storage";
-import { useTasks, useTasksDispatch } from "../../context/tasksContext";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteTask, setTask, updateTask } from "../../store/taskSlice";
+import { setMessage, setVisible } from "../../store/alertSlice";
 const TodoList = () => {
   const [filteredTasks, setFilteredTasks] = useState();
-  const { tasks, selectedTab, setTask, setMessage } = useTasks();
-  const dispatch = useTasksDispatch();
-
+  const tasks = useSelector((state) => state.tasks.items);
+  const selectedTab = useSelector((state) => state.tasks.filter);
+  const dispatch = useDispatch();
   const handleClickAction = (item, action) => {
     switch (action) {
       case "markAsDone": {
-        dispatch({
-          ...item,
-          isCompleted: !item.isCompleted,
-          type: "changed",
-        });
+        dispatch(
+          updateTask({
+            ...item,
+            isCompleted: !item.isCompleted,
+          })
+        );
         break;
       }
       case "delete": {
         if (confirm(`Are you sure want to delete this task?`)) {
-          dispatch({ id: item.id, type: "deleted" });
-          setMessage(`Task has been deleted successfully!`);
+          dispatch(deleteTask(item.id));
+          dispatch(setMessage(`Task has been deleted successfully!`));
+          dispatch(setVisible(true));
         }
       }
       default:
@@ -66,7 +69,7 @@ const TodoList = () => {
                 {task?.title}
               </div>
               <div className="item_actions">
-                <span title="Edit" onClick={() => setTask(task)}>
+                <span title="Edit" onClick={() => dispatch(setTask(task))}>
                   <EditIcon />
                 </span>
                 <span

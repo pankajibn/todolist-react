@@ -1,12 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./todoform.css";
-import { useTasks, useTasksDispatch } from "../../context/tasksContext";
+import { useDispatch, useSelector } from "react-redux";
+import { addTask, setTask, updateTask } from "../../store/taskSlice";
+import { setMessage, setVisible } from "../../store/alertSlice";
 const TodoForm = () => {
   const [text, setText] = useState("");
   const [invalid, setInvalid] = useState(false);
   const inputRef = useRef(null);
-  const { task, setTask, setMessage } = useTasks();
-  const dispatch = useTasksDispatch();
+  const task = useSelector((state) => state.tasks.task);
+
+  const dispatch = useDispatch();
 
   const handleSumbit = (e) => {
     e.preventDefault();
@@ -22,20 +25,19 @@ const TodoForm = () => {
       taskObj = {
         ...task,
         title: text,
-        type: "changed",
       };
+      dispatch(updateTask(taskObj));
       alertMessage = `Task has been updated successfully!`;
     } else {
       taskObj = {
         title: text,
-        type: "added",
       };
+      dispatch(addTask(taskObj));
       alertMessage = `Task has been added successfully!`;
     }
-
-    dispatch(taskObj);
-    setTask();
-    setMessage(alertMessage);
+    dispatch(setTask(null));
+    dispatch(setMessage(alertMessage));
+    dispatch(setVisible(true));
     setText("");
   };
 

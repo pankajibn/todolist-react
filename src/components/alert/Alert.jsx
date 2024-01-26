@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
 import "./alert.css";
-import { useTasks } from "../../context/tasksContext";
 import CheckIcon from "../icons/CheckIcon";
+import { useDispatch, useSelector } from "react-redux";
+import { setMessage, setVisible } from "../../store/alertSlice";
 const Alert = () => {
-  const [showAlert, setShowAlert] = useState(false);
-  const { message, setMessage } = useTasks();
+  const message = useSelector((state) => state.alert.message);
+  const isVisible = useSelector((state) => state.alert.isVisible);
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    if (message && message != "") setShowAlert(true);
     const timeOutId = setTimeout(() => {
-      setMessage();
+      dispatch(setMessage(null));
+      dispatch(setVisible(false));
     }, 5000);
 
     return () => clearTimeout(timeOutId);
@@ -16,7 +19,7 @@ const Alert = () => {
 
   return (
     <>
-      {showAlert && message && (
+      {isVisible && message && (
         <div className="alert alert_container">
           <CheckIcon checked="true" /> {message}
         </div>

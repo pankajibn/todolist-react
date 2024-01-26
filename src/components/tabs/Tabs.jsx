@@ -1,9 +1,12 @@
 import React from "react";
 import "./tabs.css";
-import { useTasks } from "../../context/tasksContext";
+import { useDispatch, useSelector } from "react-redux";
+import { setFilter } from "../../store/taskSlice";
 const Tabs = () => {
   const tabs = ["All", "Active", "Completed"];
-  const { selectedTab, setSelectedTab } = useTasks();
+
+  const selectedTab = useSelector((state) => state.tasks.filter);
+  const dispatch = useDispatch();
 
   return (
     <div className="tabs_container">
@@ -11,7 +14,7 @@ const Tabs = () => {
         {tabs.map((tab) => (
           <li
             className={selectedTab == tab ? `active` : ``}
-            onClick={() => setSelectedTab(tab)}
+            onClick={() => dispatch(setFilter(tab))}
           >
             {tab}
           </li>
